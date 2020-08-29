@@ -10,8 +10,8 @@ import com.example.fyi5.R;
 
 public class MapTestActivity extends AppCompatActivity {
 
-    public MapView mMapView;
-    public Button mButton;
+    private MapView mMapView;
+    private Button mButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +22,9 @@ public class MapTestActivity extends AppCompatActivity {
 
     private void initialUI() {
         //获取地图控件引用
-        mMapView = findViewById(R.id.baidu_map_view);
-
         mButton = findViewById(R.id.baidu_map_btn);
+//        mMapView = findViewById(R.id.baidu_map_view);
+
 
         int a = 0;
     }
