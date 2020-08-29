@@ -31,10 +31,13 @@ import com.baidu.mapapi.search.poi.PoiDetailResult;
 import com.baidu.mapapi.search.poi.PoiDetailSearchOption;
 import com.baidu.mapapi.search.poi.PoiDetailSearchResult;
 import com.baidu.mapapi.search.poi.PoiIndoorResult;
+import com.baidu.mapapi.search.poi.PoiNearbySearchOption;
 import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
 import com.example.fyi5.AppEnv;
 import com.example.fyi5.R;
+
+import java.util.List;
 
 public class MapActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -137,11 +140,57 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             case R.id.baidu_map_search_btn:
                 pointSearch(mPoiEditText.getText().toString());
                 break;
+            case R.id.baidu_map_search_nearby_btn:
+                nearbySearch(mPoiEditText.getText().toString());
+                break;
             default:
                 Log.d(AppEnv.TAG, "意料之外的触发");
                 break;
 
         }
+    }
+
+    private void nearbySearch(String poi) {
+        mPoiSearch = PoiSearch.newInstance();
+
+        OnGetPoiSearchResultListener listener = new OnGetPoiSearchResultListener() {
+            @Override
+            public void onGetPoiResult(PoiResult poiResult) {
+                //PoiInfo 检索到的第一条信息
+                List<PoiInfo> l = poiResult.getAllPoi();
+                PoiInfo poiInfo = poiResult.getAllPoi().get(0);
+                Log.d(AppEnv.TAG, poiResult.toString());
+                //通过第一条检索信息对应的uid发起详细信息检索
+                // uid的集合，最多可以传入10个uid，多个uid之间用英文逗号分隔
+//                mPoiSearch.searchPoiDetail((new PoiDetailSearchOption()).poiUids(poiInfo.uid));
+            }
+
+            @Override
+            public void onGetPoiDetailResult(PoiDetailResult poiDetailResult) {
+
+            }
+
+            @Override
+            public void onGetPoiDetailResult(PoiDetailSearchResult poiDetailSearchResult) {
+                PoiDetailInfo poiInfo = poiDetailSearchResult.getPoiDetailInfoList().get(0);
+                Log.d(AppEnv.TAG, poiInfo.toString());
+            }
+
+            @Override
+            public void onGetPoiIndoorResult(PoiIndoorResult poiIndoorResult) {
+
+            }
+        };
+
+        mPoiSearch.setOnGetPoiSearchResultListener(listener);
+
+        mPoiSearch.searchNearby(new PoiNearbySearchOption()
+                .location(new LatLng(39.915446, 116.403869))
+                //单位：米
+                .radius(10000)
+                .keyword(poi)
+                .pageNum(10));
+
     }
 
     private void pointSearch(String poi) {
@@ -165,6 +214,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                 PoiDetailInfo poiInfo = poiDetailSearchResult.getPoiDetailInfoList().get(0);
                 Log.d(AppEnv.TAG, poiInfo.toString());
             }
+
 
             @Override
             public void onGetPoiIndoorResult(PoiIndoorResult poiIndoorResult) {
