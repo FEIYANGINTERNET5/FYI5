@@ -159,7 +159,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                 //PoiInfo 检索到的第一条信息
                 List<PoiInfo> l = poiResult.getAllPoi();
                 PoiInfo poiInfo = poiResult.getAllPoi().get(0);
-                Log.d(AppEnv.TAG, poiResult.toString());
+                Log.d(AppEnv.TAG, poiInfo.toString());
                 //通过第一条检索信息对应的uid发起详细信息检索
                 // uid的集合，最多可以传入10个uid，多个uid之间用英文逗号分隔
 //                mPoiSearch.searchPoiDetail((new PoiDetailSearchOption()).poiUids(poiInfo.uid));
