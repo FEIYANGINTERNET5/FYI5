@@ -14,8 +14,8 @@ import com.example.fyi5.R;
 
 public class MapActivity extends AppCompatActivity implements View.OnClickListener {
 
-    TextView mTextView;
-    LocationClient mLocationClient;
+    private TextView mTextView;
+    private LocationClient mLocationClient;
 
     //BDAbstractLocationListener为7.2版本新增的Abstract类型的监听接口
     //原有BDLocationListener接口暂时同步保留。具体介绍请参考后文第四步的说明
