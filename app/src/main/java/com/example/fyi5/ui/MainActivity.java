@@ -6,9 +6,13 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.baidu.mapapi.map.offline.MKOfflineMap;
+import com.baidu.mapapi.map.offline.MKOfflineMapListener;
 import com.example.fyi5.R;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    final MKOfflineMap mOffline = new MKOfflineMap();
 
 
     @Override
@@ -34,6 +38,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.map_btn:
                 jumpIntent = new Intent(this, MapActivity.class);
                 startActivity(jumpIntent);
+            case R.id.map_download_btn:
+
+                // 传入MKOfflineMapListener，离线地图状态发生改变时会触发该回调
+                mOffline.init(new MKOfflineMapListener() {
+                    @Override
+                    public void onGetOfflineMapState(int i, int i1) {
+                        mOffline.update(131);
+                    }
+                });
+                mOffline.start(131);
+                break;
             default:
                 break;
         }
