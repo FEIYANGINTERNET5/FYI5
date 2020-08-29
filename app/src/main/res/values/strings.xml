@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">FYI5</string>
+    <string name="app_id">女性安全</string>
+    <string name="voice_test">语音报警测试</string>
+    <string name="map_fun_test">安全地图功能测试</string>
+    <string name="map_test">安全地图展示测试</string>
+    <string name="location">开始定位</string>
+    <string name="send_sms">发送短信</string>
+    <string name="start_audio">开始录音</string>
+    <string name="stop_audio">停止录音</string>
+</resources>
