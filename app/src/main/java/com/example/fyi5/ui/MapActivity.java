@@ -1,6 +1,9 @@
 package com.example.fyi5.ui;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,27 +12,54 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
+import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.core.PoiDetailInfo;
+import com.baidu.mapapi.search.core.PoiInfo;
+import com.baidu.mapapi.search.poi.OnGetPoiSearchResultListener;
+import com.baidu.mapapi.search.poi.PoiCitySearchOption;
+import com.baidu.mapapi.search.poi.PoiDetailResult;
+import com.baidu.mapapi.search.poi.PoiDetailSearchOption;
+import com.baidu.mapapi.search.poi.PoiDetailSearchResult;
+import com.baidu.mapapi.search.poi.PoiIndoorResult;
+import com.baidu.mapapi.search.poi.PoiResult;
+import com.baidu.mapapi.search.poi.PoiSearch;
+import com.example.fyi5.AppEnv;
 import com.example.fyi5.R;
 
-public class MapActivity extends AppCompatActivity {
+public class MapActivity extends AppCompatActivity implements View.OnClickListener {
 
     private MapView mMapView;
+    private EditText mPoiEditText;
     private BaiduMap mBaiduMap;
     private LocationClient mLocationClient;
+
+    private PoiSearch mPoiSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        mMapView = findViewById(R.id.baidu_map_view);
+
+        initialUI();
+
 
         startLocation();
 
+    }
+
+    private void initialUI() {
+        mMapView = findViewById(R.id.baidu_map_view);
+        mPoiEditText = findViewById(R.id.poi_edit);
     }
 
     private void startLocation() {
@@ -96,6 +126,110 @@ public class MapActivity extends AppCompatActivity {
         mMapView.onDestroy();
         mMapView = null;
         super.onDestroy();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.baidu_map_point_btn:
+                setPoint();
+                break;
+            case R.id.baidu_map_search_btn:
+                pointSearch(mPoiEditText.getText().toString());
+                break;
+            default:
+                Log.d(AppEnv.TAG, "意料之外的触发");
+                break;
+
+        }
+    }
+
+    private void pointSearch(String poi) {
+        //创建POI检索实例
+        mPoiSearch = PoiSearch.newInstance();
+
+        //创建POI检索监听器
+        OnGetPoiSearchResultListener listener = new OnGetPoiSearchResultListener() {
+            @Override
+            public void onGetPoiResult(PoiResult poiResult) {
+                //PoiInfo 检索到的第一条信息
+                PoiInfo poiInfo = poiResult.getAllPoi().get(0);
+                Log.d(AppEnv.TAG, poiInfo.toString());
+                //通过第一条检索信息对应的uid发起详细信息检索
+                // uid的集合，最多可以传入10个uid，多个uid之间用英文逗号分隔
+                mPoiSearch.searchPoiDetail((new PoiDetailSearchOption()).poiUids(poiInfo.uid));
+            }
+
+            @Override
+            public void onGetPoiDetailResult(PoiDetailSearchResult poiDetailSearchResult) {
+                PoiDetailInfo poiInfo = poiDetailSearchResult.getPoiDetailInfoList().get(0);
+                Log.d(AppEnv.TAG, poiInfo.toString());
+            }
+
+            @Override
+            public void onGetPoiIndoorResult(PoiIndoorResult poiIndoorResult) {
+
+            }
+
+            //废弃
+            @Override
+            public void onGetPoiDetailResult(PoiDetailResult poiDetailResult) {
+
+            }
+        };
+
+        //设置检索监听器
+        mPoiSearch.setOnGetPoiSearchResultListener(listener);
+
+        //设置PoiCitySearchOption，发起检索请求
+        /**
+         *  PoiCiySearchOption 设置检索属性
+         *  city 检索城市
+         *  keyword 检索内容关键字
+         *  pageNum 分页页码
+         */
+        mPoiSearch.searchInCity(new PoiCitySearchOption()
+                .city("北京") //必填
+                .keyword(poi) //必填
+                .pageNum(5));
+
+
+    }
+
+    private void setPoint() {
+        //定义Maker坐标点
+        LatLng point = new LatLng(39.963175, 116.400244);
+        //构建Marker图标
+        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.mainpoint1);
+        //构建MarkerOption，用于在地图上添加Marker
+        OverlayOptions option1 = new MarkerOptions()
+                .position(point)
+                .icon(bitmap);
+        OverlayOptions option2 = new MarkerOptions()
+                .position(new LatLng(39.99, 116.42))
+                .icon(bitmap);
+        //在地图上添加Marker，并显示
+        mBaiduMap.addOverlay(option1);
+        mBaiduMap.addOverlay(option2);
+
+
+        mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
+            //marker被点击时回调的方法
+            //若响应点击事件，返回true，否则返回false
+            //默认返回false
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                if (marker.getPosition().latitude == 39.99) {
+                    Log.d(AppEnv.TAG, "点击事件1");
+                }
+                if (marker.getPosition().latitude == 39.963175) {
+                    Log.d(AppEnv.TAG, "点击事件2");
+                }
+                Log.d(AppEnv.TAG, "点击事件");
+                return true;
+            }
+        });
+
     }
 
     public class MyLocationListener extends BDAbstractLocationListener {
