@@ -3,19 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.MapActivity"
-    android:orientation="vertical">
+    tools:context=".ui.MapActivity">
 
-    <TextView
-        android:id="@+id/map_test_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
-
-    <Button
-        android:id="@+id/location_btn"
+    <com.baidu.mapapi.map.MapView
+        android:id="@+id/baidu_map_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="onClick"
-        android:text="@string/location"/>
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true" />
+
 </LinearLayout>

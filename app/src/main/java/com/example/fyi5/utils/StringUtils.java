@@ -1,4 +1,4 @@
-package com.example.fyi5;
+package com.example.fyi5.utils;
 
 public class StringUtils {
 
