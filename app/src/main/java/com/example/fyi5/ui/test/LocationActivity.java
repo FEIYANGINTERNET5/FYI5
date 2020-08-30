@@ -1,4 +1,4 @@
-package com.example.fyi5.ui;
+package com.example.fyi5.ui.test;
 
 import androidx.appcompat.app.AppCompatActivity;
 

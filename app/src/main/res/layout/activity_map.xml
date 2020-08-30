@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.MapActivity">
+    tools:context=".ui.test.MapActivity">
 
     <EditText
         android:id="@+id/poi_edit"

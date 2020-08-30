@@ -1,4 +1,4 @@
-package com.example.fyi5.ui;
+package com.example.fyi5.ui.test;
 
 import android.app.PendingIntent;
 import android.content.Intent;

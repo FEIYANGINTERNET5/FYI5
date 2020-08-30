@@ -1,4 +1,4 @@
-package com.example.fyi5.ui;
+package com.example.fyi5.ui.test;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +14,6 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
-import com.baidu.mapapi.map.CustomMapStyleCallBack;
 import com.baidu.mapapi.map.MapCustomStyleOptions;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
@@ -36,8 +35,6 @@ import com.baidu.mapapi.search.poi.PoiIndoorResult;
 import com.baidu.mapapi.search.poi.PoiNearbySearchOption;
 import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
-import com.baidu.mapapi.search.route.BikingRouteLine;
-import com.baidu.mapapi.search.route.BikingRoutePlanOption;
 import com.baidu.mapapi.search.route.BikingRouteResult;
 import com.baidu.mapapi.search.route.DrivingRouteResult;
 import com.baidu.mapapi.search.route.IndoorRouteResult;
@@ -52,7 +49,6 @@ import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.example.fyi5.AppEnv;
 import com.example.fyi5.R;
 import com.example.fyi5.utils.StringUtils;
-import com.example.fyi5.utils.overlayutil.BikingRouteOverlay;
 import com.example.fyi5.utils.overlayutil.MyWalkingRouteOverlay;
 
 

@@ -23,15 +23,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.MapActivity"></activity>
+        <activity android:name=".ui.MainActivity"></activity>
+        <activity android:name=".ui.test.MapActivity" />
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="TWVMgvg3TKpPHw0iHp57GTz79G2TMqho" />
 
-        <activity android:name=".ui.LocationActivity" />
-        <activity android:name=".ui.VoiceActivity" />
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".ui.test.LocationActivity" />
+        <activity android:name=".ui.test.VoiceActivity" />
+        <activity android:name=".ui.test.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,9 +40,10 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.baidu.location.f"
+        <service
+            android:name="com.baidu.location.f"
             android:enabled="true"
-            android:process=":remote"/>
+            android:process=":remote" />
     </application>
 
 </manifest>
