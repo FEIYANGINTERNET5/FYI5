@@ -1,6 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
+
 <resources>
+
     <color name="colorPrimary">#6200EE</color>
+
     <color name="colorPrimaryDark">#3700B3</color>
+
     <color name="colorAccent">#03DAC5</color>
+
+    <color name="bg_color">#FFFFFF</color>
+
+    <color name="login">#3285FE</color>
+
+    <color name="login_title">#333333</color>
+
+    <color name="count_down">#C11D11</color>
+
 </resources>
