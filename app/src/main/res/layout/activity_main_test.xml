@@ -5,39 +5,40 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/main_test_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        android:textSize="32sp" />
 
     <Button
-        android:id="@+id/voice_btn"
+        android:id="@+id/main_voice_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="onClick"
         android:text="@string/voice_test" />
 
     <Button
-        android:id="@+id/map_fun_btn"
+        android:id="@+id/test_map_fun_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="onClick"
         android:text="@string/map_fun_test" />
 
     <Button
-        android:id="@+id/map_btn"
+        android:id="@+id/test_map_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="onClick"
         android:text="@string/map_test" />
 
     <Button
-        android:id="@+id/map_download_btn"
+        android:id="@+id/test_map_download_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="onClick"
         android:text="@string/download_map" />
+
+    <Button
+        android:id="@+id/test_main_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="main" />
 
 </LinearLayout>

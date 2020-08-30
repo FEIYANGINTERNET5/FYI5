@@ -66,13 +66,6 @@
         <activity android:name=".ui.LoginActivity">
 
 
-            <intent-filter>
-
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-
-            </intent-filter>
 
         </activity>
 
@@ -83,6 +76,21 @@
             android:value="TWVMgvg3TKpPHw0iHp57GTz79G2TMqho" />
 
         <activity android:name=".ui.test.LocationActivity" />
+
+
+        <activity android:name=".ui.test.MainActivity" >
+
+
+            <intent-filter>
+
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+
+            </intent-filter>
+        </activity>
+
+
 
         <activity android:name=".ui.test.VoiceActivity" />
 

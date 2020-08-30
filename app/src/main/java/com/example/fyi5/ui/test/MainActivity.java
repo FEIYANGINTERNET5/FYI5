@@ -27,19 +27,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         Intent jumpIntent;
         switch (v.getId()) {
-            case R.id.voice_btn:
+            case R.id.main_voice_btn:
                 jumpIntent = new Intent(this, VoiceActivity.class);
                 startActivity(jumpIntent);
                 break;
-            case R.id.map_fun_btn:
+            case R.id.test_map_fun_btn:
                 jumpIntent = new Intent(this, LocationActivity.class);
                 startActivity(jumpIntent);
                 break;
-            case R.id.map_btn:
+            case R.id.test_map_btn:
                 jumpIntent = new Intent(this, MapActivity.class);
                 startActivity(jumpIntent);
-            case R.id.map_download_btn:
-
+            case R.id.test_map_download_btn:
                 // 传入MKOfflineMapListener，离线地图状态发生改变时会触发该回调
                 mOffline.init(new MKOfflineMapListener() {
                     @Override
@@ -48,6 +47,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
                 mOffline.start(131);
+                break;
+            case R.id.test_main_btn:
+                jumpIntent = new Intent(this, com.example.fyi5.ui.MainActivity.class);
+                startActivity(jumpIntent);
                 break;
             default:
                 break;
