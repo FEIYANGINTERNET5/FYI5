@@ -39,13 +39,16 @@ import com.baidu.mapapi.search.route.DrivingRouteResult;
 import com.baidu.mapapi.search.route.IndoorRouteResult;
 import com.baidu.mapapi.search.route.MassTransitRouteResult;
 import com.baidu.mapapi.search.route.OnGetRoutePlanResultListener;
+import com.baidu.mapapi.search.route.PlanNode;
 import com.baidu.mapapi.search.route.RoutePlanSearch;
 import com.baidu.mapapi.search.route.TransitRouteResult;
+import com.baidu.mapapi.search.route.WalkingRoutePlanOption;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.example.fyi5.AppEnv;
 import com.example.fyi5.R;
 import com.example.fyi5.utils.StringUtils;
-import com.example.fyi5.utils.overlayutil.WalkingRouteOverlay;
+import com.example.fyi5.utils.overlayutil.MyWalkingRouteOverlay;
+
 
 import java.util.List;
 
@@ -58,6 +61,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     private LocationClient mLocationClient;
 
     private PoiSearch mPoiSearch;
+    private RoutePlanSearch mRouteSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,14 +171,15 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 
     private void routeSearch(String startPoint, String endPoint) {
         if (!StringUtils.isEmpty(startPoint) && !StringUtils.isEmpty(endPoint)) {
-            RoutePlanSearch mSearch = RoutePlanSearch.newInstance();
+            mRouteSearch = RoutePlanSearch.newInstance();
 
             //创建路线规划检索结果监听器
             OnGetRoutePlanResultListener listener = new OnGetRoutePlanResultListener() {
                 @Override
                 public void onGetWalkingRouteResult(WalkingRouteResult walkingRouteResult) {
                     //创建WalkingRouteOverlay实例
-                    WalkingRouteOverlay overlay = new WalkingRouteOverlay(mBaiduMap);
+                    MyWalkingRouteOverlay overlay = new MyWalkingRouteOverlay(mBaiduMap);
+                    Log.d(AppEnv.TAG, walkingRouteResult.getRouteLines().get(0).getAllStep().toString());
                     if (walkingRouteResult.getRouteLines().size() > 0) {
                         //获取路径规划数据,(以返回的第一条数据为例)
                         //为WalkingRouteOverlay实例设置路径数据
@@ -182,6 +187,8 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                         //在地图上绘制WalkingRouteOverlay
                         overlay.addToMap();
                     }
+
+//                    mRouteSearch.destroy();
                 }
 
                 @Override
@@ -210,7 +217,18 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                 }
             };
 
-            //
+            //设置路线规划检索监听器
+            mRouteSearch.setOnGetRoutePlanResultListener(listener);
+
+            //准备起终点信息
+            PlanNode stNode = PlanNode.withCityNameAndPlaceName("北京", startPoint);
+            PlanNode enNode = PlanNode.withCityNameAndPlaceName("北京", endPoint);
+
+            //发起检索
+            mRouteSearch.walkingSearch((new WalkingRoutePlanOption())
+                    .from(stNode)
+                    .to(enNode));
+
 
         }
 
@@ -363,4 +381,6 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             mBaiduMap.setMyLocationData(locData);
         }
     }
+
+
 }
