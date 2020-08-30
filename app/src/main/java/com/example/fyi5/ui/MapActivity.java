@@ -34,8 +34,18 @@ import com.baidu.mapapi.search.poi.PoiIndoorResult;
 import com.baidu.mapapi.search.poi.PoiNearbySearchOption;
 import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
+import com.baidu.mapapi.search.route.BikingRouteResult;
+import com.baidu.mapapi.search.route.DrivingRouteResult;
+import com.baidu.mapapi.search.route.IndoorRouteResult;
+import com.baidu.mapapi.search.route.MassTransitRouteResult;
+import com.baidu.mapapi.search.route.OnGetRoutePlanResultListener;
+import com.baidu.mapapi.search.route.RoutePlanSearch;
+import com.baidu.mapapi.search.route.TransitRouteResult;
+import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.example.fyi5.AppEnv;
 import com.example.fyi5.R;
+import com.example.fyi5.utils.StringUtils;
+import com.example.fyi5.utils.overlayutil.WalkingRouteOverlay;
 
 import java.util.List;
 
@@ -43,6 +53,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 
     private MapView mMapView;
     private EditText mPoiEditText;
+    private EditText mPoiEndEditText;
     private BaiduMap mBaiduMap;
     private LocationClient mLocationClient;
 
@@ -63,6 +74,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     private void initialUI() {
         mMapView = findViewById(R.id.baidu_map_view);
         mPoiEditText = findViewById(R.id.poi_edit);
+        mPoiEndEditText = findViewById(R.id.poi_end_edit);
     }
 
     private void startLocation() {
@@ -143,11 +155,65 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             case R.id.baidu_map_search_nearby_btn:
                 nearbySearch(mPoiEditText.getText().toString());
                 break;
+            case R.id.baidu_map_search_route_btn:
+                routeSearch(mPoiEditText.getText().toString(), mPoiEndEditText.getText().toString());
+                break;
             default:
                 Log.d(AppEnv.TAG, "意料之外的触发");
                 break;
 
         }
+    }
+
+    private void routeSearch(String startPoint, String endPoint) {
+        if (!StringUtils.isEmpty(startPoint) && !StringUtils.isEmpty(endPoint)) {
+            RoutePlanSearch mSearch = RoutePlanSearch.newInstance();
+
+            //创建路线规划检索结果监听器
+            OnGetRoutePlanResultListener listener = new OnGetRoutePlanResultListener() {
+                @Override
+                public void onGetWalkingRouteResult(WalkingRouteResult walkingRouteResult) {
+                    //创建WalkingRouteOverlay实例
+                    WalkingRouteOverlay overlay = new WalkingRouteOverlay(mBaiduMap);
+                    if (walkingRouteResult.getRouteLines().size() > 0) {
+                        //获取路径规划数据,(以返回的第一条数据为例)
+                        //为WalkingRouteOverlay实例设置路径数据
+                        overlay.setData(walkingRouteResult.getRouteLines().get(0));
+                        //在地图上绘制WalkingRouteOverlay
+                        overlay.addToMap();
+                    }
+                }
+
+                @Override
+                public void onGetTransitRouteResult(TransitRouteResult transitRouteResult) {
+
+                }
+
+                @Override
+                public void onGetMassTransitRouteResult(MassTransitRouteResult massTransitRouteResult) {
+
+                }
+
+                @Override
+                public void onGetDrivingRouteResult(DrivingRouteResult drivingRouteResult) {
+
+                }
+
+                @Override
+                public void onGetIndoorRouteResult(IndoorRouteResult indoorRouteResult) {
+
+                }
+
+                @Override
+                public void onGetBikingRouteResult(BikingRouteResult bikingRouteResult) {
+
+                }
+            };
+
+            //
+
+        }
+
     }
 
     private void nearbySearch(String poi) {
