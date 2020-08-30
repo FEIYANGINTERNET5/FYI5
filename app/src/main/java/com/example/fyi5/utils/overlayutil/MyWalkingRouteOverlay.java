@@ -13,12 +13,12 @@ public class MyWalkingRouteOverlay extends WalkingRouteOverlay {
 
     @Override
     public BitmapDescriptor getStartMarker() {
-        return BitmapDescriptorFactory.fromResource(R.drawable.icon_st);
+        return BitmapDescriptorFactory.fromResource(R.drawable.icon_start_point);
     }
 
     @Override
     public BitmapDescriptor getTerminalMarker() {
-        return BitmapDescriptorFactory.fromResource(R.drawable.icon_en);
+        return BitmapDescriptorFactory.fromResource(R.drawable.icon_end_point);
     }
 
     @Override

@@ -14,6 +14,8 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.CustomMapStyleCallBack;
+import com.baidu.mapapi.map.MapCustomStyleOptions;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
@@ -34,6 +36,8 @@ import com.baidu.mapapi.search.poi.PoiIndoorResult;
 import com.baidu.mapapi.search.poi.PoiNearbySearchOption;
 import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
+import com.baidu.mapapi.search.route.BikingRouteLine;
+import com.baidu.mapapi.search.route.BikingRoutePlanOption;
 import com.baidu.mapapi.search.route.BikingRouteResult;
 import com.baidu.mapapi.search.route.DrivingRouteResult;
 import com.baidu.mapapi.search.route.IndoorRouteResult;
@@ -42,11 +46,13 @@ import com.baidu.mapapi.search.route.OnGetRoutePlanResultListener;
 import com.baidu.mapapi.search.route.PlanNode;
 import com.baidu.mapapi.search.route.RoutePlanSearch;
 import com.baidu.mapapi.search.route.TransitRouteResult;
+import com.baidu.mapapi.search.route.WalkingRouteLine;
 import com.baidu.mapapi.search.route.WalkingRoutePlanOption;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.example.fyi5.AppEnv;
 import com.example.fyi5.R;
 import com.example.fyi5.utils.StringUtils;
+import com.example.fyi5.utils.overlayutil.BikingRouteOverlay;
 import com.example.fyi5.utils.overlayutil.MyWalkingRouteOverlay;
 
 
@@ -63,16 +69,35 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     private PoiSearch mPoiSearch;
     private RoutePlanSearch mRouteSearch;
 
+    private static final String CUSTOM_FILE_NAME = "custom_map.sty";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
         initialUI();
-
-
+        initialMap();
         startLocation();
 
+    }
+
+    private void initialMap() {
+        // 获取.sty文件路径
+        String customStyleFilePath = getCustomStyleFilePath(CUSTOM_FILE_NAME);
+
+        MapCustomStyleOptions mapCustomStyleOptions = new MapCustomStyleOptions();
+        mapCustomStyleOptions.localCustomStylePath(customStyleFilePath); //本地离线样式文件路径，如果在线方式加载失败，会默认加载本地样式文件。
+
+        // 设置个性化地图样式文件的路径和加载方式
+        mMapView.setMapCustomStylePath(customStyleFilePath);
+        // 动态设置个性化地图样式是否生效
+        mMapView.setMapCustomStyleEnable(true);
+    }
+
+    private String getCustomStyleFilePath(String customFileName) {
+        String path = "file:///android_asset/customConfigdir" + customFileName;
+        return path;
     }
 
     private void initialUI() {
@@ -113,7 +138,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         mMapView.onResume();
         mBaiduMap = mMapView.getMap();
         //开启交通图
-        mBaiduMap.setTrafficEnabled(true);
+//        mBaiduMap.setTrafficEnabled(true);
         //开启城市热力图
 //        mBaiduMap.setBaiduHeatMapEnabled(true);
         //开启地图的定位图层
@@ -123,7 +148,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 
         //设置MyLocation参数
         mBaiduMap.setMyLocationConfiguration(new MyLocationConfiguration(
-                MyLocationConfiguration.LocationMode.FOLLOWING, false, null));
+                MyLocationConfiguration.LocationMode.NORMAL, false, null));
 
         //设置初始地图级别：16，比例尺200米。
         MapStatus.Builder builder = new MapStatus.Builder();
@@ -184,11 +209,14 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                         //获取路径规划数据,(以返回的第一条数据为例)
                         //为WalkingRouteOverlay实例设置路径数据
                         overlay.setData(walkingRouteResult.getRouteLines().get(0));
+
+                        showDeatils(walkingRouteResult.getRouteLines());
+
                         //在地图上绘制WalkingRouteOverlay
                         overlay.addToMap();
                     }
 
-//                    mRouteSearch.destroy();
+                    mRouteSearch.destroy();
                 }
 
                 @Override
@@ -229,10 +257,78 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                     .from(stNode)
                     .to(enNode));
 
+    /*        OnGetRoutePlanResultListener listener = new OnGetRoutePlanResultListener() {
+                @Override
+                public void onGetWalkingRouteResult(WalkingRouteResult walkingRouteResult) {
 
+                }
+
+                @Override
+                public void onGetTransitRouteResult(TransitRouteResult transitRouteResult) {
+
+                }
+
+                @Override
+                public void onGetMassTransitRouteResult(MassTransitRouteResult massTransitRouteResult) {
+
+                }
+
+                @Override
+                public void onGetDrivingRouteResult(DrivingRouteResult drivingRouteResult) {
+
+                }
+
+                @Override
+                public void onGetIndoorRouteResult(IndoorRouteResult indoorRouteResult) {
+
+                }
+
+                @Override
+                public void onGetBikingRouteResult(BikingRouteResult bikingRouteResult) {
+                    //创建BikingRouteOverlay实例
+                    BikingRouteOverlay overlay = new BikingRouteOverlay(mBaiduMap);
+                    if (bikingRouteResult.getRouteLines().size() > 0) {
+                        //获取路径规划数据,(以返回的第一条路线为例）
+                        //为BikingRouteOverlay实例设置数据
+                        overlay.setData(bikingRouteResult.getRouteLines().get(0));
+                        //在地图上绘制BikingRouteOverlay
+
+                        showDeatils(bikingRouteResult.getRouteLines());
+
+                        overlay.addToMap();
+
+                        mRouteSearch.destroy();
+                    }
+                }
+            };
+
+            mRouteSearch.setOnGetRoutePlanResultListener(listener);
+
+            PlanNode stNode = PlanNode.withCityNameAndPlaceName("北京", startPoint);
+            PlanNode enNode = PlanNode.withCityNameAndPlaceName("北京", endPoint);
+
+            mRouteSearch.bikingSearch((new BikingRoutePlanOption())
+                    .from(stNode)
+                    .to(enNode)
+                    // ridingType  0 普通骑行，1 电动车骑行
+                    // 默认普通骑行
+                    .ridingType(0));*/
         }
 
     }
+
+    private void showDeatils(List<WalkingRouteLine> routeLines) {
+        Log.d(AppEnv.TAG, "routeLinesSize: " + String.valueOf(routeLines.size()));
+        List<WalkingRouteLine.WalkingStep> allStep = routeLines.get(0).getAllStep();
+        int steps = allStep.size();
+        for (int i = 0; i < steps; i++) {
+            LatLng tempEntranceLocation = allStep.get(i).getEntrance().getLocation();
+            Log.d(AppEnv.TAG,"step "+i+" entrance lat "+tempEntranceLocation.latitude+" lon "+tempEntranceLocation.longitude);
+            LatLng tempExitLocation = allStep.get(i).getExit().getLocation();
+            Log.d(AppEnv.TAG,"step "+i+" exit lat "+tempExitLocation.latitude+" lon "+tempExitLocation.longitude);
+        }
+    }
+
 
     private void nearbySearch(String poi) {
         mPoiSearch = PoiSearch.newInstance();
