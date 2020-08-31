@@ -426,7 +426,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         //定义Maker坐标点
         LatLng point = new LatLng(39.963175, 116.400244);
         //构建Marker图标
-        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.mainpoint1);
+        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.mainpoint_1);
         //构建MarkerOption，用于在地图上添加Marker
         OverlayOptions option1 = new MarkerOptions()
                 .position(point)

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="bottom"
     tools:context=".ui.MainActivity">
 
     <com.baidu.mapapi.map.MapView
@@ -151,6 +152,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/main_combine_bar"
         android:layout_width="301dp"
         android:layout_height="83dp"
         android:layout_centerHorizontal="true"
@@ -173,6 +175,7 @@
 
         <!--智能求助-->
         <RelativeLayout
+            android:id="@+id/main_intelligent_help"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -196,6 +199,7 @@
 
         <!--电子围栏-->
         <RelativeLayout
+            android:id="@+id/main_fance_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -219,19 +223,98 @@
 
     </RelativeLayout>
 
-    <LinearLayout
+    <!--poi详情页-->
+    <ImageView
+        android:id="@+id/poi_detail_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="260dp"
+        android:src="@mipmap/poi_detail"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/route_detail_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="580dp"
+        android:src="@mipmap/route_detail"
+        android:visibility="gone" />
+
+
+    <!--起始点设置-->
+    <RelativeLayout
+        android:id="@+id/start_end_layout"
         android:layout_width="match_parent"
-        android:layout_height="565dp"
-        android:layout_alignParentBottom="true">
+        android:layout_height="130dp"
+        android:background="@color/bg_color"
+        android:visibility="gone">
+
+
+        <RelativeLayout
+            android:layout_width="290dp"
+            android:layout_height="70dp"
+            android:layout_centerInParent="true"
+            android:background="#F7F7F7">
+
+            <ImageView
+                android:layout_width="264dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/route_depart_line" />
+
+
+            <EditText
+                android:id="@+id/route_start_edit"
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="45dp"
+                android:layout_marginTop="8dp"
+                android:background="#F7F7F7"
+                android:text="当前位置"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/route_end_edit"
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="45dp"
+                android:layout_marginTop="40dp"
+                android:background="#F7F7F7"
+                android:text="望京SOHO"
+                android:textSize="16sp" />
+        </RelativeLayout>
+
 
         <ImageView
-            android:id="@+id/poi_detail_img"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@mipmap/poi_detail"
-            android:visibility="gone" />
+            android:id="@+id/route_back_icon"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginLeft="18dp"
+            android:layout_marginTop="52dp"
+            android:src="@mipmap/main_back_icon" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
+    <Button
+        android:id="@+id/main_comment_btn"
+        android:layout_width="98dp"
+        android:layout_height="32dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="780dp"
+        android:background="@mipmap/button_bg_big"
+        android:text="发布评论"
+        android:textColor="@color/bg_color"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/main_to_here_btn"
+        android:layout_width="78dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="300dp"
+        android:layout_marginTop="280dp"
+        android:background="@mipmap/button_bg_big"
+        android:text="到这去"
+        android:textColor="@color/bg_color"
+        android:visibility="gone" />
 
 </RelativeLayout>

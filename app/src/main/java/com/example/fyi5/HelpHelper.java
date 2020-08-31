@@ -52,15 +52,16 @@ public class HelpHelper {
     //！！！轻易不要调用这个方法！！！
     public void intelligentHelp() {
         sendSMS();
-        startRecord(60);
+//        startRecord(60);
     }
 
     public void sendSMS() {
         PendingIntent paIntent = PendingIntent.getBroadcast(mContext, 0, new Intent(), 0);
         smsManager = SmsManager.getDefault();
         //TODO: 紧急联系人信息处理逻辑
-        smsManager.sendTextMessage("15850726699", null, "来自FYI5的测试短信，请勿回复", paIntent,
-                null);
+        smsManager.sendTextMessage("15850726699", null,
+                "【女性安全】陈女士/先生，您的朋友苗嘉鑫正在使用求助功能，TA的位置为:北京市朝阳区酒仙桥路电子城国际电子城总部。 建议您尽快联系TA确认。",
+                paIntent, null);
         Log.d(AppEnv.TAG, "send SMS");
     }
 

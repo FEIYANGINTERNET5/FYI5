@@ -18,4 +18,11 @@
 
     <color name="main_search_text">#007AFF</color>
 
+
+    <color name="route_level_0">#01C2CE</color>
+
+    <color name="route_level_1">#3285F1</color>
+
+    <color name="route_level_2">#F85962</color>
+
 </resources>

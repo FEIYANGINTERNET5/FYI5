@@ -3,15 +3,19 @@ package com.example.fyi5.ui;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,7 +36,10 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.Overlay;
 import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.PolygonOptions;
+import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.PoiDetailInfo;
 import com.baidu.mapapi.search.core.PoiInfo;
@@ -48,6 +55,15 @@ import com.example.fyi5.AppEnv;
 import com.example.fyi5.HelpHelper;
 import com.example.fyi5.R;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     private EditText mEditText;
@@ -61,22 +77,39 @@ public class MainActivity extends AppCompatActivity {
     private MapView mMapView;
     private TextView mSearchBtn;
     private ImageView mPoiDetailImg;
+    private Button mToHereBtn;
+    private Button mCommentBtn;
+    private ImageView mRouteDetailImg;
+    private RelativeLayout mCombineBarLayout;
+    private RelativeLayout mFanceLayout;
+    private RelativeLayout mFindRouteLayout;
+    private RelativeLayout mIntelligentHelpLayout;
 
 
     private boolean startOneKeyHelp = false;
     private boolean showSetting = false;
 
     private HelpHelper mHelpHelper;
+    private SmsManager smsManager;
     private LocationClient mLocationClient;
 
-    private BaiduMap mMainBaiduMap;
+    private BaiduMap mBaiduMap;
     private PoiSearch mPoiSearch;
+
+    private final static String fileName0 = "region_0_53.json";
+    private final static String fileName1 = "region_1_7.json";
+    private String addStr0;
+    private String addStr1;
 
     @SuppressLint("HandlerLeak")
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
+                //json
+                case 0:
+                    showMarkers();
+                    break;
                 //onGetPoiDetailResult
                 case 1:
                     showPOIDetail(msg.getData());
@@ -91,32 +124,63 @@ public class MainActivity extends AppCompatActivity {
         double lat = data.getDouble("lat");
         double lon = data.getDouble("lon");
         Log.d(AppEnv.TAG, address + distance);
-        mMainBaiduMap.setMyLocationConfiguration(new MyLocationConfiguration(
+        mBaiduMap.setMyLocationConfiguration(new MyLocationConfiguration(
                 MyLocationConfiguration.LocationMode.NORMAL, false, null));
         MapStatus.Builder builder = new MapStatus.Builder();
         LatLng latLng = new LatLng(lat, lon);
         builder.target(latLng).zoom(18.0f);
-        mMainBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+        mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
         //构建Marker图标
         BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.dashazi_marker);
         //构建MarkerOption，用于在地图上添加Marker
         OverlayOptions option = new MarkerOptions()
-                .position(new LatLng(lat, lon))
+                .position(new LatLng(40.001964, 116.486945))
                 .icon(bitmap);
         //在地图上添加Marker，并显示
-        mMainBaiduMap.addOverlay(option);
+        mBaiduMap.addOverlay(option);
 
         mEditText.setVisibility(View.GONE);
         mSearchCoverLayout.setVisibility(View.GONE);
         mCurrentLocationLayout.setVisibility(View.VISIBLE);
         mSettingMenuBtn.setVisibility(View.VISIBLE);
         mPoiDetailImg.setVisibility(View.VISIBLE);
+        mCommentBtn.setVisibility(View.VISIBLE);
+        mToHereBtn.setVisibility(View.VISIBLE);
+
+        mToHereBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch2FindRouteMode();
+            }
+        });
+
+        mCommentBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         mPoiDetailImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(AppEnv.TAG, "mPoiDetailImg onClicked...");
             }
         });
+    }
+
+    private void switch2FindRouteMode() {
+        Log.d(AppEnv.TAG, "switch2FindRouteMode");
+        drawLines();
+        mSearchLayout.setVisibility(View.GONE);
+        mCurrentLocationLayout.setVisibility(View.GONE);
+        mSettingMenuLayout.setVisibility(View.GONE);
+        mFindRouteLayout.setVisibility(View.VISIBLE);
+        mPoiDetailImg.setVisibility(View.GONE);
+        mToHereBtn.setVisibility(View.GONE);
+        mCommentBtn.setVisibility(View.GONE);
+        mRouteDetailImg.setVisibility(View.VISIBLE);
+
     }
 
     @Override
@@ -171,13 +235,32 @@ public class MainActivity extends AppCompatActivity {
         mCurrentLocationLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mMainBaiduMap.setMyLocationConfiguration(new MyLocationConfiguration(
+                mBaiduMap.setMyLocationConfiguration(new MyLocationConfiguration(
                         MyLocationConfiguration.LocationMode.FOLLOWING, false, null));
                 MapStatus.Builder builder = new MapStatus.Builder();
                 builder.zoom(16.0f);
-                mMainBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+                mBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
             }
         });
+
+        mFanceLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch2FanceMode();
+            }
+        });
+
+        mIntelligentHelpLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mHelpHelper.intelligentHelp();
+            }
+        });
+    }
+
+
+    private void switch2FanceMode() {
+        drawFance();
     }
 
     @Override
@@ -185,35 +268,35 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         //在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
         mMapView.onResume();
-        mMainBaiduMap = mMapView.getMap();
+        mBaiduMap = mMapView.getMap();
         //开启交通图
 //        mBaiduMap.setTrafficEnabled(true);
         //开启城市热力图
 //        mBaiduMap.setBaiduHeatMapEnabled(true);
         //开启地图的定位图层
-        mMainBaiduMap.setMyLocationEnabled(true);
+        mBaiduMap.setMyLocationEnabled(true);
         //设置缩放按钮是否显示
         mMapView.showZoomControls(false);
 
         //设置MyLocation参数
-        mMainBaiduMap.setMyLocationConfiguration(new MyLocationConfiguration(
+        mBaiduMap.setMyLocationConfiguration(new MyLocationConfiguration(
                 MyLocationConfiguration.LocationMode.FOLLOWING, false, null));
 
         //设置初始地图级别：16，比例尺200米。
         MapStatus.Builder builder = new MapStatus.Builder();
         builder.zoom(16.0f);
-        mMainBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+        mBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
 
 
-        mMainBaiduMap.setOnMapTouchListener(new BaiduMap.OnMapTouchListener() {
+        mBaiduMap.setOnMapTouchListener(new BaiduMap.OnMapTouchListener() {
             @Override
             public void onTouch(MotionEvent motionEvent) {
-                mMainBaiduMap.setMyLocationConfiguration(new MyLocationConfiguration(
+                mBaiduMap.setMyLocationConfiguration(new MyLocationConfiguration(
                         MyLocationConfiguration.LocationMode.NORMAL, false, null));
             }
         });
 
-        mMainBaiduMap.setOnMapClickListener(new BaiduMap.OnMapClickListener() {
+        mBaiduMap.setOnMapClickListener(new BaiduMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
                 mPoiDetailImg.setVisibility(View.GONE);
@@ -234,8 +317,91 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        parseJson();
 
     }
+
+    private void parseJson() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                addStr0 = getJson(fileName0);
+                addStr1 = getJson(fileName1);
+            }
+        }).start();
+
+        Message msg = Message.obtain();
+        msg.what = 0;
+        Bundle bundle = new Bundle();
+        bundle.putString("addStr0", addStr0);
+        bundle.putString("addStr1", addStr1);
+        handler.sendMessage(msg);
+
+    }
+
+    private void showMarkers() {
+
+        try {
+            JSONArray jsonArray = new JSONArray(addStr0);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+                double lat = jsonObject.getDouble("Y");
+                double lon = jsonObject.getDouble("X");
+                LatLng point = new LatLng(lat, lon);
+                BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.mainpoint_0);
+                OverlayOptions option = new MarkerOptions()
+                        .position(point)
+                        .icon(bitmap);
+                mBaiduMap.addOverlay(option);
+//                person.setId(i+"");
+//                person.setName(jsonObject.getString("name"));
+//                person.setAge(jsonObject.getString("age"));
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            JSONArray jsonArray = new JSONArray(addStr1);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+                double lat = jsonObject.getDouble("Y");
+                double lon = jsonObject.getDouble("X");
+                LatLng point = new LatLng(lat, lon);
+                BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.mainpoint_1);
+                OverlayOptions option = new MarkerOptions()
+                        .position(point)
+                        .icon(bitmap);
+                mBaiduMap.addOverlay(option);
+//                person.setId(i+"");
+//                person.setName(jsonObject.getString("name"));
+//                person.setAge(jsonObject.getString("age"));
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public String getJson(String fileName) {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            AssetManager assetManager = getAssets();
+            BufferedReader bf = new BufferedReader(new InputStreamReader(
+                    assetManager.open(fileName)));
+            String line;
+            while ((line = bf.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stringBuilder.toString();
+    }
+
 
     @Override
     protected void onPause() {
@@ -247,10 +413,169 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         mLocationClient.stop();
-        mMainBaiduMap.setMyLocationEnabled(false);
+        mBaiduMap.setMyLocationEnabled(false);
         mMapView.onDestroy();
         mMapView = null;
         super.onDestroy();
+    }
+
+    private void switch2RouteMode() {
+        mRouteDetailImg.setVisibility(View.VISIBLE);
+    }
+
+    private void drawLines() {
+        List<LatLng> points = new ArrayList<LatLng>();
+        //构建折线点坐标
+        //1
+        LatLng p1 = new LatLng(39.9885789080103, 116.49745071996887);
+        LatLng p2 = new LatLng(39.98856508780282, 116.49666021112009);
+        LatLng p3 = new LatLng(39.98851267591795, 116.4963907194671);
+        points.add(p1);
+        points.add(p2);
+        points.add(p3);
+        drawLine(points, 1, true);
+
+        //0
+        LatLng p31 = new LatLng(39.98851267591795, 116.4963907194671);
+        LatLng p4 = new LatLng(39.99026495226589, 116.4963547872467);
+        points.clear();
+        points.add(p31);
+        points.add(p4);
+        drawLine(points, 0, true);
+
+        //1
+        LatLng p41 = new LatLng(39.99026495226589, 116.4963547872467);
+        LatLng p5 = new LatLng(39.993934026546846, 116.4960134311529);
+        points.clear();
+        points.add(p41);
+        points.add(p5);
+        drawLine(points, 1, true);
+
+        //2
+        LatLng p51 = new LatLng(39.993934026546846, 116.4960134311529);
+        LatLng p6 = new LatLng(39.99509482223617, 116.49444139651045);
+        points.clear();
+        points.add(p51);
+        points.add(p6);
+        drawLine(points, 2, true);
+
+        //1
+        LatLng p61 = new LatLng(39.99509482223617, 116.49444139651045);
+        LatLng p7 = new LatLng(39.99746471835229, 116.49096495418684);
+        points.clear();
+        points.add(p61);
+        points.add(p7);
+        drawLine(points, 1, true);
+
+        //0
+        LatLng p71 = new LatLng(39.99746471835229, 116.49096495418684);
+        LatLng p8 = new LatLng(39.99801054273875, 116.49011156395235);
+        points.clear();
+        points.add(p71);
+        points.add(p8);
+        drawLine(points, 0, true);
+
+        //1
+        LatLng p81 = new LatLng(39.99801054273875, 116.49011156395235);
+        LatLng p9 = new LatLng(39.999889803193014, 116.49033614032984);
+        points.clear();
+        points.add(p81);
+        points.add(p9);
+        drawLine(points, 1, true);
+
+        //0
+        LatLng p91 = new LatLng(39.999889803193014, 116.49033614032984);
+        LatLng p10 = new LatLng(40.0013544847498, 116.49016546228295);
+        LatLng p11 = new LatLng(40.00272932211247, 116.48950071620557);
+        points.clear();
+        points.add(p91);
+        points.add(p10);
+        points.add(p11);
+        drawLine(points, 0, true);
+
+        //1
+        LatLng p111 = new LatLng(40.00272932211247, 116.48950071620557);
+        LatLng p12 = new LatLng(40.00270859612826, 116.48937495343417);
+        points.clear();
+        points.add(p111);
+        points.add(p12);
+        drawLine(points, 1, true);
+
+        //0
+        LatLng p121 = new LatLng(40.00270859612826, 116.48937495343417);
+        LatLng p13 = new LatLng(40.00276386540545, 116.48927613982806);
+        LatLng p122 = new LatLng(40.001964, 116.486945);
+        points.clear();
+        points.add(p121);
+        points.add(p13);
+        points.add(p122);
+        drawLine(points, 0, true);
+
+        //1
+        LatLng p82 = new LatLng(39.99801054273875, 116.49011156395235);
+        LatLng p92 = new LatLng(40.001674, 116.484393);
+        LatLng p102 = new LatLng(40.002863, 116.485417);
+        LatLng p112 = new LatLng(40.002545, 116.486136);
+        points.clear();
+        points.add(p82);
+        points.add(p92);
+        points.add(p102);
+        points.add(p112);
+        drawLine(points, 1, false);
+
+        //0
+        LatLng p1121 = new LatLng(40.002545, 116.486136);
+        LatLng p1221 = new LatLng(40.001964, 116.486945);
+        points.clear();
+        points.add(p1121);
+        points.add(p1221);
+        drawLine(points, 0, false);
+
+
+    }
+
+    private void drawLine(List<LatLng> points, int level, boolean b) {
+        int color = 0;
+        switch (level) {
+            case 0:
+                color = getResources().getColor(R.color.route_level_0);
+                break;
+            case 1:
+                color = getResources().getColor(R.color.route_level_1);
+                break;
+            case 2:
+                color = getResources().getColor(R.color.route_level_2);
+                break;
+            default:
+                break;
+        }
+        int width = b ? 15 : 8;
+        //设置折线的属性
+        OverlayOptions mOverlayOptions = new PolylineOptions()
+                .width(width)
+                .color(color)
+                .points(points);
+        //在地图上绘制折线
+        //mPloyline 折线对象
+        Overlay mPolyline = mBaiduMap.addOverlay(mOverlayOptions);
+    }
+
+    private void drawFance() {
+        //多边形顶点位置
+        List<LatLng> points = new ArrayList<>();
+        points.add(new LatLng(40.002098, 116.47896));
+        points.add(new LatLng(39.98458, 116.481763));
+        points.add(new LatLng(39.989007, 116.50403));
+        points.add(new LatLng(39.999615, 116.50785));
+        points.add(new LatLng(40.009315, 116.493297));
+
+        //构造PolygonOptions
+        PolygonOptions mPolygonOptions = new PolygonOptions().points(points)
+                //填充颜色
+                .fillColor(0x2601C2CE);
+
+        //在地图上显示多边形
+        mBaiduMap.addOverlay(mPolygonOptions);
     }
 
     private void pointSearch(String poi) {
@@ -273,7 +598,7 @@ public class MainActivity extends AppCompatActivity {
             public void onGetPoiDetailResult(PoiDetailSearchResult poiDetailSearchResult) {
                 PoiDetailInfo poiInfo = poiDetailSearchResult.getPoiDetailInfoList().get(0);
                 Log.d(AppEnv.TAG, poiInfo.toString());
-                Message msg = new Message();
+                Message msg = Message.obtain();
                 Bundle mBundle = new Bundle();
                 mBundle.putString("address", poiInfo.getAddress());
                 mBundle.putString("distance", "1.7km");
@@ -382,7 +707,14 @@ public class MainActivity extends AppCompatActivity {
         mOneKeyHelp = findViewById(R.id.main_one_key_help);
         mMapView = findViewById(R.id.main_map_view);
         mSearchBtn = findViewById(R.id.main_search_btn);
-        mPoiDetailImg = findViewById(R.id.poi_detail_img);
+        mPoiDetailImg = findViewById(R.id.poi_detail_image);
+        mRouteDetailImg = findViewById(R.id.route_detail_image);
+        mCombineBarLayout = findViewById(R.id.main_combine_bar);
+        mFanceLayout = findViewById(R.id.main_fance_btn);
+        mToHereBtn = findViewById(R.id.main_to_here_btn);
+        mCommentBtn = findViewById(R.id.main_comment_btn);
+        mFindRouteLayout = findViewById(R.id.start_end_layout);
+        mIntelligentHelpLayout = findViewById(R.id.main_intelligent_help);
     }
 
     public class MyLocationListener extends BDAbstractLocationListener {
@@ -397,7 +729,7 @@ public class MainActivity extends AppCompatActivity {
                     // 此处设置开发者获取到的方向信息，顺时针0-360
                     .direction(location.getDirection()).latitude(location.getLatitude())
                     .longitude(location.getLongitude()).build();
-            mMainBaiduMap.setMyLocationData(locData);
+            mBaiduMap.setMyLocationData(locData);
         }
     }
 

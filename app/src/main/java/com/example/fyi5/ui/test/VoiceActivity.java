@@ -4,10 +4,12 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.fyi5.AppEnv;
 import com.example.fyi5.AudioManager;
 import com.example.fyi5.R;
 
@@ -32,9 +34,9 @@ public class VoiceActivity extends AppCompatActivity implements View.OnClickList
                 PendingIntent paIntent = PendingIntent.getBroadcast(this, 0, new Intent(), 0);
                 smsManager = SmsManager.getDefault();
                 //TODO: 紧急联系人信息处理逻辑
-//                smsManager.sendTextMessage("15850726699", null, "来自FYI5的测试短信，请勿回复", paIntent,
-//                        null);
-//                Log.d(AppEnv.TAG, "send SMS");
+                smsManager.sendTextMessage("15850726699", null, "来自FYI5的测试短信，请勿回复", paIntent,
+                        null);
+                Log.d(AppEnv.TAG, "send SMS");
                 break;
             case R.id.start_audio_btn:
                 audioManager.startRecord();

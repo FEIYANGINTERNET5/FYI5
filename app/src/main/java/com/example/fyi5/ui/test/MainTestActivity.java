@@ -1,18 +1,23 @@
 package com.example.fyi5.ui.test;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.baidu.mapapi.map.offline.MKOfflineMap;
 import com.baidu.mapapi.map.offline.MKOfflineMapListener;
+import com.example.fyi5.AppEnv;
 import com.example.fyi5.R;
 
 public class MainTestActivity extends AppCompatActivity implements View.OnClickListener {
 
     final MKOfflineMap mOffline = new MKOfflineMap();
+    SmsManager smsManager;
 
 
     @Override
