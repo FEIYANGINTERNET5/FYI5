@@ -2,9 +2,12 @@ package com.example.fyi5.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,12 +23,16 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.PoiDetailInfo;
 import com.baidu.mapapi.search.core.PoiInfo;
@@ -53,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView mOneKeyHelp;
     private MapView mMapView;
     private TextView mSearchBtn;
+    private ImageView mPoiDetailImg;
 
 
     private boolean startOneKeyHelp = false;
@@ -63,6 +71,53 @@ public class MainActivity extends AppCompatActivity {
 
     private BaiduMap mMainBaiduMap;
     private PoiSearch mPoiSearch;
+
+    @SuppressLint("HandlerLeak")
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                //onGetPoiDetailResult
+                case 1:
+                    showPOIDetail(msg.getData());
+                    break;
+            }
+        }
+    };
+
+    private void showPOIDetail(Bundle data) {
+        String address = data.getString("address");
+        String distance = data.getString("distance");
+        double lat = data.getDouble("lat");
+        double lon = data.getDouble("lon");
+        Log.d(AppEnv.TAG, address + distance);
+        mMainBaiduMap.setMyLocationConfiguration(new MyLocationConfiguration(
+                MyLocationConfiguration.LocationMode.NORMAL, false, null));
+        MapStatus.Builder builder = new MapStatus.Builder();
+        LatLng latLng = new LatLng(lat, lon);
+        builder.target(latLng).zoom(18.0f);
+        mMainBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+        //构建Marker图标
+        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.dashazi_marker);
+        //构建MarkerOption，用于在地图上添加Marker
+        OverlayOptions option = new MarkerOptions()
+                .position(new LatLng(lat, lon))
+                .icon(bitmap);
+        //在地图上添加Marker，并显示
+        mMainBaiduMap.addOverlay(option);
+
+        mEditText.setVisibility(View.GONE);
+        mSearchCoverLayout.setVisibility(View.GONE);
+        mCurrentLocationLayout.setVisibility(View.VISIBLE);
+        mSettingMenuBtn.setVisibility(View.VISIBLE);
+        mPoiDetailImg.setVisibility(View.VISIBLE);
+        mPoiDetailImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(AppEnv.TAG, "mPoiDetailImg onClicked...");
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,9 +208,20 @@ public class MainActivity extends AppCompatActivity {
         mMainBaiduMap.setOnMapTouchListener(new BaiduMap.OnMapTouchListener() {
             @Override
             public void onTouch(MotionEvent motionEvent) {
-                Log.d(AppEnv.TAG, "map touched");
                 mMainBaiduMap.setMyLocationConfiguration(new MyLocationConfiguration(
                         MyLocationConfiguration.LocationMode.NORMAL, false, null));
+            }
+        });
+
+        mMainBaiduMap.setOnMapClickListener(new BaiduMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                mPoiDetailImg.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onMapPoiClick(MapPoi mapPoi) {
+
             }
         });
 
@@ -163,9 +229,11 @@ public class MainActivity extends AppCompatActivity {
         mSearchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                pointSearch(mEditText);
+                pointSearch(mEditText.getText().toString());
+                Log.d(AppEnv.TAG, "start search...");
             }
         });
+
 
     }
 
@@ -205,18 +273,24 @@ public class MainActivity extends AppCompatActivity {
             public void onGetPoiDetailResult(PoiDetailSearchResult poiDetailSearchResult) {
                 PoiDetailInfo poiInfo = poiDetailSearchResult.getPoiDetailInfoList().get(0);
                 Log.d(AppEnv.TAG, poiInfo.toString());
+                Message msg = new Message();
+                Bundle mBundle = new Bundle();
+                mBundle.putString("address", poiInfo.getAddress());
+                mBundle.putString("distance", "1.7km");
+                mBundle.putDouble("lat", poiInfo.getLocation().latitude);
+                mBundle.putDouble("lon", poiInfo.getLocation().longitude);
+                msg.what = 1;
+                msg.setData(mBundle);
+                handler.sendMessage(msg);
             }
-
 
             @Override
             public void onGetPoiIndoorResult(PoiIndoorResult poiIndoorResult) {
-
             }
 
             //废弃
             @Override
             public void onGetPoiDetailResult(PoiDetailResult poiDetailResult) {
-
             }
         };
 
@@ -308,6 +382,7 @@ public class MainActivity extends AppCompatActivity {
         mOneKeyHelp = findViewById(R.id.main_one_key_help);
         mMapView = findViewById(R.id.main_map_view);
         mSearchBtn = findViewById(R.id.main_search_btn);
+        mPoiDetailImg = findViewById(R.id.poi_detail_img);
     }
 
     public class MyLocationListener extends BDAbstractLocationListener {

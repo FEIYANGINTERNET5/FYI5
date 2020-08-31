@@ -219,5 +219,19 @@
 
     </RelativeLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="565dp"
+        android:layout_alignParentBottom="true">
+
+        <ImageView
+            android:id="@+id/poi_detail_img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/poi_detail"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
 
 </RelativeLayout>
