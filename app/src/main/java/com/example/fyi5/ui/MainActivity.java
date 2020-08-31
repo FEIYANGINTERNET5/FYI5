@@ -14,16 +14,22 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.example.fyi5.AppEnv;
+import com.example.fyi5.HelpHelper;
 import com.example.fyi5.R;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText mEditText;
-    ImageView mBackIcon;
-    RelativeLayout mSearchLayout;
-    RelativeLayout mCurrentLocationLayout;
-    RelativeLayout mSettingMenuLayout;
-    LinearLayout mSearchCoverLayout;
+    private EditText mEditText;
+    private ImageView mBackIcon;
+    private RelativeLayout mSearchLayout;
+    private RelativeLayout mCurrentLocationLayout;
+    private RelativeLayout mSettingMenuLayout;
+    private LinearLayout mSearchCoverLayout;
+    private ImageView mOneKeyHelp;
+
+    private boolean startOneKeyHelp = false;
+
+    private HelpHelper mHelpHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initialUI();
+
+        //实例化HelpHelper
+        mHelpHelper = new HelpHelper(this);
 
         mSearchLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,6 +52,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 switch2NormalMode();
+            }
+        });
+
+        mOneKeyHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startOneKeyHelp = !startOneKeyHelp;
+                if (startOneKeyHelp) {
+                    mHelpHelper.startOneKeyHelp();
+                } else {
+                    mHelpHelper.stopOneKeyHelp();
+                }
             }
         });
     }
@@ -77,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
         mSearchCoverLayout = findViewById(R.id.main_search_cover_layout);
         mCurrentLocationLayout = findViewById(R.id.main_current_location);
         mSettingMenuLayout = findViewById(R.id.main_setting_menu);
+        mOneKeyHelp = findViewById(R.id.main_one_key_help);
     }
 
 }

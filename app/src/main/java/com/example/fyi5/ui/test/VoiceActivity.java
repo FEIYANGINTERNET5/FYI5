@@ -22,7 +22,6 @@ public class VoiceActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_voice);
         // 录音文件存放目录
         String audioSaveDir = getFilesDir().getAbsolutePath() + "/audiodemo/";
-        audioSaveDir += "";
         audioManager = AudioManager.getInstance(this);
     }
 

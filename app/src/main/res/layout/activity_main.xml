@@ -98,6 +98,7 @@
 
     </RelativeLayout>
 
+    <!--底部组合控件-->
     <RelativeLayout
         android:layout_width="301dp"
         android:layout_height="83dp"
@@ -105,7 +106,9 @@
         android:layout_marginTop="700dp"
         android:background="@mipmap/main_bottom_combine">
 
+        <!--一键求助-->
         <ImageView
+            android:id="@+id/main_one_key_help"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_centerInParent="true"
@@ -117,6 +120,7 @@
             android:layout_centerInParent="true"
             android:src="@mipmap/main_alert" />
 
+        <!--智能求助-->
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -139,6 +143,7 @@
 
         </RelativeLayout>
 
+        <!--电子围栏-->
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
