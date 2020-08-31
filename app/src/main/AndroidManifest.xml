@@ -78,7 +78,7 @@
         <activity android:name=".ui.test.LocationActivity" />
 
 
-        <activity android:name=".ui.test.MainActivity" >
+        <activity android:name=".ui.test.MainTestActivity" >
 
 
             <intent-filter>

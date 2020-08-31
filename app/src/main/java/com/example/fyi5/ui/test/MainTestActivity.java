@@ -10,7 +10,7 @@ import com.baidu.mapapi.map.offline.MKOfflineMap;
 import com.baidu.mapapi.map.offline.MKOfflineMapListener;
 import com.example.fyi5.R;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainTestActivity extends AppCompatActivity implements View.OnClickListener {
 
     final MKOfflineMap mOffline = new MKOfflineMap();
 

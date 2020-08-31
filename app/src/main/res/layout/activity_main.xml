@@ -53,6 +53,7 @@
             android:visibility="gone" />
 
         <TextView
+            android:id="@+id/main_search_btn"
             android:layout_width="50dp"
             android:layout_height="24dp"
             android:layout_centerVertical="true"
@@ -83,7 +84,7 @@
 
     <!--功能设置-->
     <RelativeLayout
-        android:id="@+id/main_setting_menu"
+        android:id="@+id/main_setting_btn"
         android:layout_width="38dp"
         android:layout_height="38dp"
         android:layout_alignRight="@+id/main_search_layout"
@@ -98,7 +99,57 @@
 
     </RelativeLayout>
 
-    <!--底部组合控件-->
+    <!--设置详情页-->
+    <RelativeLayout
+        android:id="@+id/main_setting_menu"
+        android:layout_width="70dp"
+        android:layout_height="93dp"
+        android:layout_alignLeft="@+id/main_search_layout"
+        android:layout_alignTop="@+id/main_setting_btn"
+        android:layout_marginLeft="245dp"
+        android:background="@drawable/shape"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/main_close_setting_text"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_marginLeft="54dp"
+            android:layout_marginTop="4dp"
+            tools:src="@mipmap/main_setting" />
+
+        <TextView
+            android:id="@+id/main_fun_setting_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/main_close_setting_text"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:text="功能设置"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/main_help_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/main_fun_setting_text"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="24dp"
+            android:text="帮助/反馈"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/main_help_text"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="24dp"
+            android:text="退出登录"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+
     <RelativeLayout
         android:layout_width="301dp"
         android:layout_height="83dp"
