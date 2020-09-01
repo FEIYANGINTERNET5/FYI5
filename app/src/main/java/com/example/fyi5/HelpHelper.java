@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
+import android.hardware.Camera;
 import android.media.MediaPlayer;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -17,7 +18,8 @@ public class HelpHelper {
     private SmsManager smsManager;
     private AudioManager audioManager;
     private String audioSaveDir;
-    MediaPlayer mediaPlayer;
+    private MediaPlayer mediaPlayer;
+    private Camera mCamera = Camera.open();
 
     public HelpHelper(Context mContext) {
         this.mContext = mContext;
@@ -40,13 +42,62 @@ public class HelpHelper {
             e.printStackTrace();
         }
 
+/*        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    openFlash();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    closeFlash();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();*/
     }
+
+    /**
+     * 打开闪光灯
+     *
+     * @return
+     */
+    private void openFlash() {
+        if (mCamera == null) {
+            return;
+        }
+        Camera.Parameters parameter = mCamera.getParameters();
+        parameter.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+        mCamera.setParameters(parameter);
+    }
+
+    /**
+     * 关闭闪光灯
+     *
+     * @return
+     */
+    private void closeFlash() {
+        if (mCamera == null) {
+            return;
+        }
+        Camera.Parameters parameter = mCamera.getParameters();
+        parameter.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+        mCamera.setParameters(parameter);
+    }
+
 
     public void stopOneKeyHelp() {
         mediaPlayer.stop();
         mediaPlayer.reset();
         mediaPlayer.release();
         mediaPlayer = null;
+        closeFlash();
     }
 
     //！！！轻易不要调用这个方法！！！

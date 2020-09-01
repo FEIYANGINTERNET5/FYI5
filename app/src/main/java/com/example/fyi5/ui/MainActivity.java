@@ -4,8 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -100,6 +102,31 @@ public class MainActivity extends AppCompatActivity {
     private final static String fileName1 = "region_1_7.json";
     private String addStr0;
     private String addStr1;
+    private long lastKeyDownTime = 0;
+    private int keyDownCount = 0;
+
+    private final BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            final String action = intent.getAction();
+            if (Intent.ACTION_SCREEN_OFF.equals(action) || Intent.ACTION_SCREEN_ON.equals(action)) {
+                if (lastKeyDownTime == 0) {
+                    lastKeyDownTime = System.currentTimeMillis();
+                }
+                if (System.currentTimeMillis() - lastKeyDownTime < 4000) {
+                    keyDownCount++;
+                } else {
+                    lastKeyDownTime = 0;
+                    keyDownCount = 0;
+                }
+                if (keyDownCount == 3) {
+                    mHelpHelper.intelligentHelp();
+                    Log.d(AppEnv.TAG,"按键报警逻辑触发");
+                }
+                Log.d(AppEnv.TAG, action + "  keyDownCount:" + keyDownCount + "  lastKeyDownTime" + lastKeyDownTime);
+            }
+        }
+    };
 
     @SuppressLint("HandlerLeak")
     Handler handler = new Handler() {
@@ -256,6 +283,10 @@ public class MainActivity extends AppCompatActivity {
                 mHelpHelper.intelligentHelp();
             }
         });
+
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
+        registerReceiver(mBatInfoReceiver, filter);
+
     }
 
 
@@ -417,6 +448,15 @@ public class MainActivity extends AppCompatActivity {
         mMapView.onDestroy();
         mMapView = null;
         super.onDestroy();
+
+        if (mBatInfoReceiver != null) {
+            try {
+                unregisterReceiver(mBatInfoReceiver);
+            } catch (Exception e) {
+                Log.e(AppEnv.TAG, "unregisterReceiver mBatInfoReceiver failure :" + e.getCause());
+            }
+        }
+
     }
 
     private void switch2RouteMode() {
