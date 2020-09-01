@@ -8,7 +8,7 @@
     tools:context=".ui.SettingActivity">
 
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/setting_background"
@@ -20,19 +20,17 @@
             android:layout_height="20dp"
             android:layout_marginLeft="18.5dp"
             android:layout_marginTop="20.5dp"
-            android:background="@drawable/back2"/>
+            android:background="@drawable/back2" />
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="25dp"
-            android:layout_marginLeft="133.5dp"
-            android:layout_marginTop="18dp"
-            android:layout_marginBottom="16dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:text="功能设置"
             android:textColor="@color/login_title"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
     <LinearLayout
@@ -56,7 +54,7 @@
                 android:layout_weight="1"
                 android:text="智能求助开关"
                 android:textColor="@color/login_title"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
             <ImageView
                 android:id="@+id/iv_setting_first"
@@ -64,7 +62,7 @@
                 android:layout_height="46dp"
                 android:layout_marginLeft="195dp"
                 android:layout_marginTop="12dp"
-                android:background="@drawable/open2"/>
+                android:background="@drawable/open2" />
 
         </LinearLayout>
 
@@ -73,7 +71,7 @@
             android:layout_height="17dp"
             android:layout_marginTop="5dp"
             android:text="开启后，满足设定条件时将自动发送求助短信"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
 
     </LinearLayout>
 
@@ -93,7 +91,7 @@
             android:layout_marginTop="12dp"
             android:text="求助唤醒设置"
             android:textColor="@color/login_title"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <LinearLayout
             android:layout_width="374dp"
@@ -111,6 +109,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
+                    android:layout_marginTop="2dp"
                     android:text="语音唤醒"
                     android:textColor="@color/login_title"
                     android:textSize="14sp"></TextView>
@@ -118,7 +117,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="17dp"
-                    android:text="自定义特殊指令作为语音唤醒的触发键"
+                    android:layout_marginTop="2dp"
+                    android:text="自定义特殊指令作为语音唤醒的触发"
                     android:textSize="12sp"></TextView>
 
             </LinearLayout>
@@ -137,7 +137,7 @@
             android:layout_width="373dp"
             android:layout_height="40dp"
             android:background="@drawable/setting_shape"
-            android:hint="请输入紧急联系人的手机号码"
+            android:hint="请输入唤醒指令，例如“别碰我”"
             android:paddingStart="14dp"
             android:textSize="14sp"
             android:visibility="visible" />
@@ -159,15 +159,17 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
                     android:text="快捷按键"
                     android:textColor="@color/login_title"
-                    android:textSize="14sp"/>
+                    android:textSize="14sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
                     android:text="连续点击3次电源键，唤醒呼救"
-                    android:textSize="12sp"/>
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
@@ -177,7 +179,7 @@
                 android:layout_height="46dp"
                 android:layout_marginLeft="139dp"
                 android:layout_marginTop="0dp"
-                android:background="@drawable/open2"/>
+                android:background="@drawable/open2" />
 
 
         </LinearLayout>
@@ -191,20 +193,122 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="20dp"
+                android:layout_gravity="center"
                 android:layout_weight="1"
                 android:text="自动录音"
                 android:textColor="@color/login_title"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
 
             <ImageView
                 android:id="@+id/iv_setting_four"
                 android:layout_width="46dp"
                 android:layout_height="46dp"
-                android:background="@drawable/open2"/>
+                android:background="@drawable/open2" />
         </LinearLayout>
 
     </LinearLayout>
 
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape"
+        android:orientation="vertical"
+        android:paddingLeft="18dp"
+        android:paddingRight="18dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_marginTop="12dp"
+            android:text="报警音设置"
+            android:textColor="@color/login_title"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="374dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/setting_default_voice" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="2dp"
+                    android:text="默认报警音"
+                    android:textColor="@color/login_title"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/setting_default_voice"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_marginRight="18dp"
+                android:background="@mipmap/setting_raido_1" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="374dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/setting_add_voice" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="2dp"
+                    android:text="自定义报警音"
+                    android:textColor="@color/login_title"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/setting_add_voice"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_marginRight="18dp"
+                android:background="@mipmap/setting_raido_0" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="12dp" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -222,37 +326,29 @@
             android:text="紧急联系人设置"
 
             android:textColor="@color/login_title"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <EditText
             android:id="@+id/et_setting_tel"
             android:layout_width="373dp"
             android:layout_height="40dp"
+            android:layout_marginTop="12dp"
             android:background="@drawable/setting_shape"
             android:hint="请输入紧急联系人的手机号码"
             android:paddingStart="14dp"
-            android:paddingTop="10dp" />
+            android:textSize="14sp" />
 
 
         <EditText
             android:id="@+id/et_setting_help_con"
             android:layout_width="373dp"
-            android:layout_height="116dp"
+            android:layout_height="60dp"
             android:layout_marginTop="12dp"
             android:background="@drawable/setting_shape"
             android:hint="请编辑智能求助紧急发送的内容"
             android:paddingLeft="14dp"
-            android:paddingTop="10dp"/>
+            android:textSize="14sp" />
 
-        <EditText
-            android:id="@+id/et_setting_con"
-            android:layout_width="373dp"
-            android:layout_height="116dp"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/setting_shape"
-            android:hint="请编辑电子围栏紧急发送的内容"
-            android:paddingLeft="14dp"
-            android:paddingTop="10dp"/>
 
     </LinearLayout>
 
@@ -262,6 +358,6 @@
         android:layout_height="60dp"
         android:layout_marginTop="8dp"
         android:background="@color/setting_background"
-        android:text="保存"/>
+        android:text="保存" />
 
 </LinearLayout>

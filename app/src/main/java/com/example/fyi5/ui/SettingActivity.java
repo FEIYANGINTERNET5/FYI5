@@ -16,6 +16,8 @@ public class SettingActivity extends AppCompatActivity {
     private EditText tel, helpCon, con;
     private Button save;
     private EditText settingVoiceEdit;
+    private ImageView mDefaultVoiceImg;
+    private ImageView mAddVoiceImg;
 
     private boolean one_switch_flag = true;
     private boolean two_switch_flag = false;
@@ -83,6 +85,22 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
 
+        mDefaultVoiceImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDefaultVoiceImg.setImageResource(R.mipmap.setting_raido_1);
+                mAddVoiceImg.setImageResource(R.mipmap.setting_raido_0);
+            }
+        });
+
+        mAddVoiceImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDefaultVoiceImg.setImageResource(R.mipmap.setting_raido_0);
+                mAddVoiceImg.setImageResource(R.mipmap.setting_raido_1);
+            }
+        });
+
     }
 
     private void initView() {
@@ -94,9 +112,11 @@ public class SettingActivity extends AppCompatActivity {
 
         tel = findViewById(R.id.et_setting_tel);
         helpCon = findViewById(R.id.et_setting_help_con);
-        con = findViewById(R.id.et_setting_con);
 
         save = findViewById(R.id.bt_setting_save);
         settingVoiceEdit = findViewById(R.id.setting_voice_text);
+
+        mDefaultVoiceImg = findViewById(R.id.setting_default_voice);
+        mAddVoiceImg = findViewById(R.id.setting_add_voice);
     }
 }
