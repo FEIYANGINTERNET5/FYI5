@@ -21,6 +21,9 @@
     <color name="setting_background">#FEFFFE</color>
 
 
+    <color name="setting_row_background">#EEEEEE</color>
+
+
     <color name="pink">#FF4081</color>
 
     <color name="colorW">#FFFFFF</color>

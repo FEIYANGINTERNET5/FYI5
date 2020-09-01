@@ -42,7 +42,7 @@
         android:paddingLeft="18dp"
         android:paddingRight="18dp"
         android:orientation="vertical"
-        android:background="@drawable/setting_shape"
+        android:background="@drawable/shape"
         android:layout_width="match_parent"
         android:layout_height="92dp">
 
@@ -87,7 +87,7 @@
         android:layout_marginTop="8dp"
         android:paddingLeft="18dp"
         android:paddingRight="18dp"
-        android:background="@drawable/setting_shape"
+        android:background="@drawable/shape"
         android:orientation="vertical">
 
         <TextView
@@ -216,6 +216,7 @@
             android:layout_width="wrap_content"
             android:layout_height="25dp"
             android:textSize="18sp"
+
             android:textColor="@color/login_title"
             android:text="紧急联系人设置"></TextView>
 
@@ -234,7 +235,7 @@
             android:layout_marginTop="12dp"
             android:layout_width="373dp"
             android:layout_height="116dp"
-            android:background="@drawable/shape"
+            android:background="@drawable/setting_shape"
             android:paddingLeft="14dp"
             android:paddingTop="10dp"
             android:hint="请编辑智能求助紧急发送的内容"></EditText>
@@ -244,7 +245,7 @@
             android:layout_marginTop="12dp"
             android:layout_width="373dp"
             android:layout_height="116dp"
-            android:background="@drawable/shape"
+            android:background="@drawable/setting_shape"
             android:paddingLeft="14dp"
             android:paddingTop="10dp"
             android:hint="请编辑电子围栏紧急发送的内容"></EditText>
