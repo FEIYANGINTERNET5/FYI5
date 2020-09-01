@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,17 +14,22 @@ import com.baidu.mapapi.map.offline.MKOfflineMap;
 import com.baidu.mapapi.map.offline.MKOfflineMapListener;
 import com.example.fyi5.AppEnv;
 import com.example.fyi5.R;
+import com.example.fyi5.ui.CommentActivity;
+import com.example.fyi5.ui.LoginActivity;
+import com.example.fyi5.ui.SettingActivity;
 
 public class MainTestActivity extends AppCompatActivity implements View.OnClickListener {
 
     final MKOfflineMap mOffline = new MKOfflineMap();
     SmsManager smsManager;
 
+    private Button bt_set;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_test);
+
 
     }
 
@@ -55,6 +61,18 @@ public class MainTestActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.test_main_btn:
                 jumpIntent = new Intent(this, com.example.fyi5.ui.MainActivity.class);
+                startActivity(jumpIntent);
+                break;
+            case R.id.test_main_setting:
+                jumpIntent = new Intent(this, SettingActivity.class);
+                startActivity(jumpIntent);
+                break;
+            case R.id.test_main_login:
+                jumpIntent = new Intent(this, LoginActivity.class);
+                startActivity(jumpIntent);
+                break;
+            case R.id.test_main_comment:
+                jumpIntent = new Intent(this, CommentActivity.class);
                 startActivity(jumpIntent);
                 break;
             default:

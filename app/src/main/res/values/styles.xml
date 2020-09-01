@@ -5,6 +5,67 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+    </style>
+
+    <!-- Base application theme. -->
+
+
+
+    -<style name="def_progress_style">
+
+    <item name="outer_layer_solide_color">@color/colorW</item>
+
+    <item name="outer_layer_stroke_color">#90F76E6B</item>
+
+    <item name="outer_layer_stroke_width">2dp</item>
+
+    <item name="midlle_layer_bg_color">@color/strackColor</item>
+
+    <item name="midlle_layer_progress_color">#F76E6B</item>
+
+    <item name="midlle_layer_progress_width">4dp</item>
+
+    <item name="midlle_layer_small_circle_solide_color">@color/colorW</item>
+
+    <item name="midlle_layer_small_circle_stroke_color">#F76E6B</item>
+
+    <item name="midlle_layer_small_circle_size">9dp</item>
+
+    <item name="midlle_layer_small_circle_stroke_width">4dp</item>
+
+    <item name="shadow_layer_color">#90F76E6B</item>
+
+    <item name="shadow_layer_inner_color">@color/colorW</item>
+
+    <item name="inner_text_size">50sp</item>
+
+    <item name="inner_text_color">#F76E6B</item>
+
+</style>
+
+
+    <!-- 中间弹出框 -->
+    <style name="dialog_center" parent="Theme.AppCompat.Dialog.Alert">
+        <!-- 去黑边 -->
+        <item name="android:windowFrame">@null</item>
+        <item name="android:screenOrientation">portrait</item>
+        <!-- 设置是否可滑动 -->
+        <item name="android:windowIsFloating">true</item>
+        <!-- 背景 -->
+        <!-- 窗口背景 @color/touming的值为：#00000000 ， style中不能直接引用16进制，感谢评论区的老铁提醒-->
+
+        <item name="android:windowBackground">@color/setting_background</item>
+
+        <!-- 是否变暗 -->
+        <item name="android:backgroundDimEnabled">true</item>
+        <!-- 点击空白部分activity不消失 -->
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
+
+    <style name="main_menu_animstyle">
+        <item name="android:windowEnterAnimation">@anim/anim_enter_from_bottom</item>
+        <item name="android:windowExitAnimation">@anim/anim_exit_from_bottom</item>
     </style>
 
 </resources>

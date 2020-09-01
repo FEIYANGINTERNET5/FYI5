@@ -1,4 +1,4 @@
-package com.example.fyi5.ui.test;
+package com.example.fyi5.ui;
 
 import android.os.Bundle;
 
