@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
     private RelativeLayout mFanceLayout;
     private RelativeLayout mFindRouteLayout;
     private RelativeLayout mIntelligentHelpLayout;
+    private TextView mSettingText;
 
 
     private boolean startOneKeyHelp = false;
@@ -121,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (keyDownCount == 3) {
                     mHelpHelper.intelligentHelp();
-                    Log.d(AppEnv.TAG,"按键报警逻辑触发");
+                    Log.d(AppEnv.TAG, "按键报警逻辑触发");
                 }
                 Log.d(AppEnv.TAG, action + "  keyDownCount:" + keyDownCount + "  lastKeyDownTime" + lastKeyDownTime);
             }
@@ -283,6 +284,15 @@ public class MainActivity extends AppCompatActivity {
                 mHelpHelper.intelligentHelp();
             }
         });
+
+        mSettingText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent jumpIntent = new Intent(MainActivity.this, SettingActivity.class);
+                startActivity(jumpIntent);
+            }
+        });
+
 
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
         registerReceiver(mBatInfoReceiver, filter);
@@ -755,6 +765,7 @@ public class MainActivity extends AppCompatActivity {
         mCommentBtn = findViewById(R.id.main_comment_btn);
         mFindRouteLayout = findViewById(R.id.start_end_layout);
         mIntelligentHelpLayout = findViewById(R.id.main_intelligent_help);
+        mSettingText = findViewById(R.id.main_fun_setting_text);
     }
 
     public class MyLocationListener extends BDAbstractLocationListener {
