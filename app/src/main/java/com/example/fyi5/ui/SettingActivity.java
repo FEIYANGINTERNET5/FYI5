@@ -12,12 +12,13 @@ import com.example.fyi5.R;
 
 public class SettingActivity extends AppCompatActivity {
 
-    private ImageView back,one,two,three,four;
-    private EditText tel,helpCon,con;
+    private ImageView back, one, two, three, four;
+    private EditText tel, helpCon, con;
     private Button save;
+    private EditText settingVoiceEdit;
 
     private boolean one_switch_flag = true;
-    private boolean two_switch_flag = true;
+    private boolean two_switch_flag = false;
     private boolean three_switch_flag = true;
     private boolean four_switch_flag = true;
 
@@ -31,10 +32,10 @@ public class SettingActivity extends AppCompatActivity {
         one.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(one_switch_flag){
+                if (one_switch_flag) {
                     one.setImageResource(R.drawable.close2);
                     one_switch_flag = false;
-                }else{
+                } else {
                     one.setImageResource(R.drawable.open2);
                     one_switch_flag = true;
                 }
@@ -44,11 +45,13 @@ public class SettingActivity extends AppCompatActivity {
         two.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(two_switch_flag){
+                if (two_switch_flag) {
                     two.setImageResource(R.drawable.close2);
+                    settingVoiceEdit.setVisibility(View.GONE);
                     two_switch_flag = false;
-                }else{
+                } else {
                     two.setImageResource(R.drawable.open2);
+                    settingVoiceEdit.setVisibility(View.VISIBLE);
                     two_switch_flag = true;
                 }
             }
@@ -57,10 +60,10 @@ public class SettingActivity extends AppCompatActivity {
         three.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(three_switch_flag){
+                if (three_switch_flag) {
                     three.setImageResource(R.drawable.close2);
                     three_switch_flag = false;
-                }else{
+                } else {
                     three.setImageResource(R.drawable.open2);
                     three_switch_flag = true;
                 }
@@ -70,10 +73,10 @@ public class SettingActivity extends AppCompatActivity {
         four.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(four_switch_flag){
+                if (four_switch_flag) {
                     four.setImageResource(R.drawable.close2);
                     four_switch_flag = false;
-                }else{
+                } else {
                     four.setImageResource(R.drawable.open2);
                     four_switch_flag = true;
                 }
@@ -94,5 +97,6 @@ public class SettingActivity extends AppCompatActivity {
         con = findViewById(R.id.et_setting_con);
 
         save = findViewById(R.id.bt_setting_save);
+        settingVoiceEdit = findViewById(R.id.setting_voice_text);
     }
 }
